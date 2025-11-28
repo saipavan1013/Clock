@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roman Numeral Clock</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #cfe8f0;
+            margin: 0;
+        }
+
+        .clock {
+            width: 300px;
+            height: 300px;
+            border: 5px solid black;
+            border-radius: 50%;
+            position: relative;
+            background: white;
+        }
+
+        .hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom;
+            transform: translateX(-50%) rotate(0deg);
+            border-radius: 5px;
+        }
+
+        .hour {
+            width: 6px;
+            height: 60px;
+            background: black;
+        }
+
+        .minute {
+            width: 4px;
+            height: 80px;
+            background: black;
+        }
+
+        .second {
+            width: 2px;
+            height: 90px;
+            background: red;
+        }
+
+        .center {
+            width: 10px;
+            height: 10px;
+            background: black;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+        }
+
+        .roman {
+            position: absolute;
+            font-size: 18px;
+            font-weight: bold;
+            color: black;
+            text-align: center;
+            width: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="clock">
+        <div class="hand hour" id="hour-hand"></div>
+        <div class="hand minute" id="minute-hand"></div>
+        <div class="hand second" id="second-hand"></div>
+        <div class="center"></div>
+    </div>
+
+    <script>
+        function createRomanNumerals() {
+            const clock = document.querySelector('.clock');
+            const romanNumbers = ["XII", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI"];
+            
+            romanNumbers.forEach((num, index) => {
+                const angle = (index * 30) * (Math.PI / 180);
+                const radius = 120;
+                const x = 140 + Math.sin(angle) * radius;
+                const y = 140 - Math.cos(angle) * radius;
+
+                const number = document.createElement('div');
+                number.innerText = num;
+                number.classList.add('roman');
+                number.style.left = `${x}px`;
+                number.style.top = `${y}px`;
+                number.id = num-`${num}`;
+
+                clock.appendChild(number);
+            });
+        }
+
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours() % 12;
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+
+            const hourDeg = (hours * 30) + (minutes * 0.5);
+            const minuteDeg = (minutes * 6) + (seconds * 0.1);
+            const secondDeg = seconds * 6;
+
+            document.getElementById("hour-hand").style.transform = `translateX(-50%) rotate(${hourDeg}deg)`;
+            document.getElementById("minute-hand").style.transform = `translateX(-50%) rotate(${minuteDeg}deg)`;
+            document.getElementById("second-hand").style.transform = `translateX(-50%) rotate(${secondDeg}deg)`;
+
+            changeRomanColors();
+        }
+
+        function changeRomanColors() {
+            const romanNumbers = ["XII", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI"];
+            
+            romanNumbers.forEach(num => {
+                const element = document.getElementById(num-`${num}`);
+                const color = rgb(`${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}`);
+                element.style.color = color;
+            });
+        }
+
+        createRomanNumerals();
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
+
+</body>
+</html>
